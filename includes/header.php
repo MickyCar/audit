@@ -35,6 +35,19 @@
 		<!--[if !IE]>-->
 
 		<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+		
+		<script type="text/javascript" src="http://www.jchartfx.com/libs/v7/current/js/jchartfx.system.js">
+		</script>
+		<script type="text/javascript" src="http://www.jchartfx.com/libs/v7/current/js/jchartfx.coreVector.js">
+		</script>
+		<script type="text/javascript" src="http://www.jchartfx.com/libs/v7/current/js/jchartfx.coreVector3D.js">
+		</script>
+		<script type="text/javascript" src="http://www.jchartfx.com/libs/v7/current/js/jchartfx.advanced.js">
+		</script>
+		<script type="text/javascript" src="http://www.jchartfx.com/libs/v7/current/js/jchartfx.gauge.js">
+		</script>
+		<script type="text/javascript" src="http://www.jchartfx.com/libs/v7/current/motifs/jchartfx.motif.aurora.js">
+		</script>
 
 		<!--<![endif]-->
 
