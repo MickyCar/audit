@@ -55,6 +55,13 @@ $('#task-tab ul').sortable({
 			console.log($(ui.item).text().trim() + " changed");
 			var parentId = $(ui.item).closest('ul').attr('parent') || 0;
 			console.log("parent : " + parentId);
+			$(ui.item).removeClass('item-blue item-grey');
+			if(parentId == 0 || $(ui.item).children('ul').children('li').length > 0) {
+				$(ui.item).addClass('item-blue');
+			} else {
+				$(ui.item).addClass('item-grey');
+				//TODO : toggle parents to blue
+			}
 			var order = $(ui.item).closest('li').index();
 			console.log("order in leaf : " + order);
 			$('#tasks ul').css('min-height','')
