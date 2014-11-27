@@ -10,11 +10,11 @@
 		while (!$rs->EOF) {
 			$section = ($rs->fields["pagename"] == "_section");
 			$color = ($rs->fields["parent"] == 0 || $section) ? "blue" : "grey";
-			echo '<li class="item-' . $color . ' clearfix">
+			echo '<li class="item-' . $color . ' clearfix" pagename="' . $rs->fields["pagename"] . '">
 					<i class="' .$rs->fields["icon"] . '" style="margin-right:5px"></i>
 					<label class="inline">
 					<span class="lbl"> ' . $rs->fields["name"] . '</span>
-				</label><br /><br /><ul id="tasks" class="item-list" parent="' . $rs->fields["id"] . '">';
+				</label><br /><ul id="tasks" class="item-list" parent="' . $rs->fields["id"] . '">';
 			if($section) {				
 				menu_from($rs->fields["id"]);
 			}
@@ -69,4 +69,18 @@ $('#task-tab ul').sortable({
 	}
 );
 $('#task-tab ul').disableSelection();
+
+function parse_menu() {
+	var t = $("#task-tab li");
+	for(var i=0; i < t.length; i++) {
+		var el = $(t[i]);
+		var title = $.trim(el.text());
+		var parentId = el.closest('ul').attr('parent') || 0;
+		var icon = $(el.children('i')[0]).attr('class') || 'null';
+		var pagename = el.attr('pagename');
+		var type = $(el.children('ul')[0]).children('li').length;
+		console.log(type + ' ' + title + ' ' + parentId + ' ' + icon + ' ' + pagename);
+	}
+}
+
 </script>
