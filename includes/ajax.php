@@ -17,8 +17,17 @@
 	
 	switch(@$_POST['action']) {
 		
+		case "update_menu":
+			$sql = explode(';',$_POST['q']);
+			$err = 0;
+			foreach($sql as $q) {
+				if(!$conn1->Execute($q)) echo $q;
+			}
+			if($err == 0) echo "ok";
+		break;
+		
 		case "check_query_key":
-			$sql = "SELECT * FROM jira6 WHERE query_key = '" . trim($_POST["key"]) . "' UNION SELECT * FROM jira6_details WHERE query_key = '" . trim($_POST["key"]) . "';";
+			$sql = "SELECT * FROM jira6 WHERE query_key = '" . $_POST["key"] . "' UNION SELECT * FROM jira6_details WHERE query_key = '" . $_POST["key"] . "';";
 			$rs = $conn1->Execute($sql);
 			if($rs->RowCount() == 0) echo "ok";
 			else echo "ko"; 
@@ -33,12 +42,12 @@
 				$sql = "DELETE FROM jira6_links WHERE id_enfant = (SELECT id FROM " . $table . " WHERE query_key = '" . $key . "');";
 				if (!$conn1->Execute($sql)) {
 					$conn1->FailTrans();
-					$error = $conn->ErrorMsg();
+					$error = $conn1->ErrorMsg();
 				} 
 				$sql2 = "DELETE FROM " . $table . " WHERE query_key = '" . $key . "'";
 				if (!$conn1->Execute($sql2)) {
 					$conn1->FailTrans();
-					$error = $conn->ErrorMsg();
+					$error = $conn1->ErrorMsg();
 				} 
 				$conn1->CompleteTrans();
 				if(empty($error)) {
