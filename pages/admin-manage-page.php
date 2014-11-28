@@ -2,8 +2,8 @@
     <ul id="tasks" class="item-list" style="width:40%;">
 <?php
 	function menu_from($root_id) {
-		global $conn1;
-		global $request;
+		$conn1 = db("app");
+		global $request; //Recup URL demandée
 		$sql = 'SELECT * FROM menu WHERE parent = '.$root_id.' ORDER BY order_in_leaf';
 		$conn1->SetFetchMode(ADODB_FETCH_ASSOC);
 		$rs = $conn1->Execute($sql);

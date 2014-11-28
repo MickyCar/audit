@@ -1,41 +1,56 @@
 <?php
+require_once('adodb5/adodb.inc.php');
+// SQL Definition
+$d = array();
 
-function process_list($query_list) {
-	global $conn1;
-	echo "<ul>";	
-	foreach($query_list as $qname) {
-		$sql = "SELECT * FROM jira6 WHERE query_key = '".$qname."'";
-		$conn1->SetFetchMode(ADODB_FETCH_ASSOC);
-		$rs = $conn1->Execute($sql);
-		$title = $rs->fields["name"];
-		$sql = $rs->fields["query"];
-		to_jiraDb();
-		$conn1->SetFetchMode(ADODB_FETCH_NUM);
-		$rs = $conn1->Execute($sql);
-		while (!$rs->EOF) {
-			echo "<li>".$title." : ".$rs->fields[0]."</li>";
-			$rs->MoveNext();
-		}
-		to_appDb();
-	}
-	echo "</ul>";
+// DB "application"
+$app = array(
+			"host" => "127.0.0.1",
+			"user" => "root",
+			"pass" => "root",
+			"db" => "jira_auditor",
+			"type" => "mysql");
+$d["app"] = $app; //"app" est le nom de la ref a ce serveur
+
+// JIRA Sample 1 MySQL
+$jira1 = array(
+			"host" => "127.0.0.1",
+			"user" => "root",
+			"pass" => "root",
+			"db" => "jiradb",
+			"type" => "mysql");
+$d["jira1"] = $jira1; 
+
+// JIRA Local
+$jira2 = array(
+			"host" => "127.0.0.1",
+			"user" => "root",
+			"pass" => "root",
+			"db" => "jira",
+			"type" => "postgres");
+$d["jira2"] = $jira2; 
+
+function db($name, $debug=false) {
+	global $d;
+	$conn = &ADONewConnection($d[$name]["type"]);
+	$conn->debug = $debug;
+	$conn->SetFetchMode(ADODB_FETCH_ASSOC);
+	$conn->PConnect($d[$name]["host"], $d[$name]["user"], $d[$name]["pass"], $d[$name]["db"]);
+	return $conn;
 }
 
 function get_single_result($query_key, $column) {
-	global $conn1;
+	$conn1 = db("app");
 	$sql = "SELECT * FROM jira6 WHERE query_key = '".$query_key."'";
-	$conn1->SetFetchMode(ADODB_FETCH_ASSOC);
 	$rs = $conn1->Execute($sql);
 	$title = $rs->fields["name"];
 	$sql = $rs->fields["query"];
-	to_jiraDb();
-	$conn1->SetFetchMode(ADODB_FETCH_NUM);
+	$conn1 = db("jira1");
 	$rs = $conn1->Execute($sql);
 	$return = "";
 	if (!$rs->EOF) {
 		$return = $rs->fields[$column];
 	}
-	to_appDb();
 	return $return;
 }
 

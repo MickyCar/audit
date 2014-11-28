@@ -1,14 +1,7 @@
 <?php
-	include("../adodb5/adodb.inc.php");
-
-	$host = '127.0.0.1';
-	$user = 'root';
-	$pass = 'root';
-	$db = 'jira_auditor';
-
-	$conn1 = &ADONewConnection('mysql');
-	$conn1->debug = false;
-	$conn1->PConnect($host, $user, $pass, $db);
+	require('core.php');
+	$conn = db("app");
+	
 	
 	// Security & Consistency Check 
 	foreach($_POST as $key => $value) {
@@ -21,14 +14,14 @@
 			$sql = explode(';',$_POST['q']);
 			$err = 0;
 			foreach($sql as $q) {
-				if(!$conn1->Execute($q)) echo $q;
+				if(!$conn->Execute($q)) echo $q;
 			}
 			if($err == 0) echo "ok";
 		break;
 		
 		case "check_query_key":
 			$sql = "SELECT * FROM jira6 WHERE query_key = '" . $_POST["key"] . "' UNION SELECT * FROM jira6_details WHERE query_key = '" . $_POST["key"] . "';";
-			$rs = $conn1->Execute($sql);
+			$rs = $conn->Execute($sql);
 			if($rs->RowCount() == 0) echo "ok";
 			else echo "ko"; 
 		break;
@@ -38,18 +31,18 @@
 			$table = $_POST["table"];
 			if(substr($table,-8) == "_details") {
 				$error = "";
-				$conn1->StartTrans();
+				$conn->StartTrans();
 				$sql = "DELETE FROM jira6_links WHERE id_enfant = (SELECT id FROM " . $table . " WHERE query_key = '" . $key . "');";
-				if (!$conn1->Execute($sql)) {
-					$conn1->FailTrans();
-					$error = $conn1->ErrorMsg();
+				if (!$conn->Execute($sql)) {
+					$conn->FailTrans();
+					$error = $conn->ErrorMsg();
 				} 
 				$sql2 = "DELETE FROM " . $table . " WHERE query_key = '" . $key . "'";
-				if (!$conn1->Execute($sql2)) {
-					$conn1->FailTrans();
-					$error = $conn1->ErrorMsg();
+				if (!$conn->Execute($sql2)) {
+					$conn->FailTrans();
+					$error = $conn->ErrorMsg();
 				} 
-				$conn1->CompleteTrans();
+				$conn->CompleteTrans();
 				if(empty($error)) {
 					echo "ok";
 				} else {
@@ -57,15 +50,15 @@
 				}
 			} else {
 				$sql = "DELETE FROM " . $table . " WHERE query_key = '" . $key . "'";
-				if($conn1->Execute($sql)) echo "ok";
-				else echo $conn1->ErrorMsg();
+				if($conn->Execute($sql)) echo "ok";
+				else echo $conn->ErrorMsg();
 			}
 		break;
 		
 		case "add_query":
 			$type = strtolower($_POST["type"]);
 			$name = $_POST["name"];
-			$query = $conn1->qstr($_POST["query"]);
+			$query = $conn->qstr($_POST["query"]);
 			$key = $_POST["key"];
 			$parent_id = $_POST["parent"];
 			$table = "jira6";
@@ -75,22 +68,22 @@
 			} else {
 				$sql = "INSERT INTO " . $table . " VALUES (null,'" . $key . "','" . $name . "','" . $type . "'," . $query . ");";
 				$error = "";
-				$conn1->StartTrans();
-				if (!$conn1->Execute($sql)) {
-					$conn1->FailTrans();
+				$conn->StartTrans();
+				if (!$conn->Execute($sql)) {
+					$conn->FailTrans();
 					$error = $conn->ErrorMsg();
 				}
 				if($parent_id != -1) {
 					$id = "SELECT id FROM jira6_details WHERE query_key = '" . $key . "';";
-					$conn1->SetFetchMode(ADODB_FETCH_ASSOC);
-					$rs = $conn1->Execute($id);
+					$conn->SetFetchMode(ADODB_FETCH_ASSOC);
+					$rs = $conn->Execute($id);
 					$sql2 = "INSERT INTO jira6_links VALUES ('" . $parent_id . "', '" . @$rs->fields["id"] . "');";
-					if (!$rs || !$conn1->Execute($sql2)) {
-						$conn1->FailTrans();
-						$error .= " " . $conn1->ErrorMsg(); 
+					if (!$rs || !$conn->Execute($sql2)) {
+						$conn->FailTrans();
+						$error .= " " . $conn->ErrorMsg(); 
 					}
 				}
-				$conn1->CompleteTrans();
+				$conn->CompleteTrans();
 				if(empty($error)) {
 					echo "Query added to the database, thank you!";
 				} else echo "Error! \n" . $error . " : \n" . $sql;

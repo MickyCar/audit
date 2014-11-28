@@ -19,7 +19,7 @@
 
 		<tbody>
 		<?php
-			global $conn1;
+			$conn1 = db("app");
 			$conn1->SetFetchMode(ADODB_FETCH_ASSOC);
 			
 			// Result TOTAL

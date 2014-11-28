@@ -6,7 +6,7 @@
 		$origin = "App Settings";
 		$link = "admin-home";
 	}	
-	global $conn1;
+	$conn1 = db("app");
 	$conn1->SetFetchMode(ADODB_FETCH_ASSOC);
 	$query = "SELECT * FROM menu WHERE pagename = '".$request."'";
 	$resultSet = $conn1->Execute($query);

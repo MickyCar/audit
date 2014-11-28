@@ -1,6 +1,5 @@
 <?php
-	// SQL Link back
-	global $conn1;
+	$conn1 = db("app");
 ?>
 	<div class="row-fluid">
 		<div class="span12">

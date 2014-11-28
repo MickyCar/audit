@@ -89,8 +89,7 @@
 												<option value="" />
 												<option value="-1" />None
 												<?php
-													global $conn1;
-													to_appDb();
+													$conn1 = db("app");
 													$conn1->SetFetchMode(ADODB_FETCH_ASSOC);
 													$sql = "SELECT id,name FROM jira6";
 													$rs = $conn1->Execute($sql);
