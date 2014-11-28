@@ -39,18 +39,14 @@ function db($name, $debug=false) {
 	return $conn;
 }
 
-function get_single_result($query_key, $column) {
+function rs($db,$query) {
 	$conn1 = db("app");
-	$sql = "SELECT * FROM jira6 WHERE query_key = '".$query_key."'";
-	$rs = $conn1->Execute($sql);
+	$sql = "SELECT * FROM jira6 WHERE query_key = '".$query."'";
+	$rs = $conn1->Execute($sql) or die($conn1->ErrorMsg());
 	$title = $rs->fields["name"];
 	$sql = $rs->fields["query"];
-	$conn1 = db("jira1");
-	$rs = $conn1->Execute($sql);
-	$return = "";
-	if (!$rs->EOF) {
-		$return = $rs->fields[$column];
-	}
+	$conn1 = db($db) or die($conn1->ErrorMsg());
+	$return =  $conn1->Execute($sql) or die($conn1->ErrorMsg());
 	return $return;
 }
 

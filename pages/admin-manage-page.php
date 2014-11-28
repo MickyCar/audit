@@ -1,3 +1,6 @@
+<!--
+	REPLACE ALL PAR NESTED LIST
+-->
 <div id="task-tab" class="tab-pane active">
     <ul id="tasks" class="item-list" style="width:40%;">
 <?php
