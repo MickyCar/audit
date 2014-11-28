@@ -1,5 +1,6 @@
 <?php
 require_once('adodb5/adodb.inc.php');
+include_once('adodb5/adodb-pager.inc.php');
 // SQL Definition
 $d = array();
 
@@ -48,6 +49,17 @@ function rs($db,$query) {
 	$conn1 = db($db) or die($conn1->ErrorMsg());
 	$return =  $conn1->Execute($sql) or die($conn1->ErrorMsg());
 	return $return;
+}
+
+function mockup($db,$query) {
+	$conn1 = db("app");
+	$sql = "SELECT * FROM jira6 WHERE query_key = '".$query."'";
+	$rs = $conn1->Execute($sql) or die($conn1->ErrorMsg());
+	$title = $rs->fields["name"];
+	$sql = str_replace(';',"",$rs->fields["query"]);
+	$d = db($db);
+	$pager = new ADODB_Pager($d,$sql);
+	$pager->Render($rows_per_page=5,$title,"Query Key : " . $query);
 }
 
 ?>

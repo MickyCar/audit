@@ -1,6 +1,6 @@
 <?php
 	$db = "jira1";
-	$rs = rs($db,"groups_top5");
+	$rs = rs($db,"groups_top");
 ?>
 <p>
 <blockquote>
@@ -50,8 +50,8 @@ Usage, statistics and listing of relevant data to help JIRA Admins' analysis of 
 
                         <tbody>
                         	<?php
-							
-							while(!$rs->EOF) {
+							$cpt = 0;
+							while(!$rs->EOF && $cpt < 5) {
 								echo '<tr>
                                 <td>' . $rs->fields["group"] . '</td>
 
@@ -64,6 +64,7 @@ Usage, statistics and listing of relevant data to help JIRA Admins' analysis of 
 								echo ($rs->fields["nbProject"] > 0) ? $rs->fields["nbProject"] : "0" . '
                                 </td>
                             </tr>';
+								$cpt++;
 								$rs->MoveNext();	
 							}
 							
@@ -78,11 +79,7 @@ Usage, statistics and listing of relevant data to help JIRA Admins' analysis of 
 <h3 class="header smaller lighter blue">Empty Groups</h3>
 <div class="col-xs-12">
     <div class="col-sm-6">
-        Test
-    </div>
-    <div class="vspace-6-sm"></div>
-    <div class="col-sm-6">
-        Test
+        <?php mockup("jira1","groups_top"); ?>
     </div>
 </div>
 <script type="text/javascript">

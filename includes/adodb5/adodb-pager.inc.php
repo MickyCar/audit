@@ -236,7 +236,7 @@ class ADODB_Pager {
 
 	//-----------------------------------
 	// Call this class to draw everything.
-	function Render($rows=10)
+	function Render($rows=5,$title,$foot)
 	{
 	global $ADODB_COUNTRECS;
 
@@ -258,15 +258,9 @@ class ADODB_Pager {
 			return;
 		}
 
-		if (!$rs->EOF && (!$rs->AtFirstPage() || !$rs->AtLastPage()))
-			$header = $this->RenderNav();
-		else
-			$header = "&nbsp;";
-
 		$grid = $this->RenderGrid();
-		$footer = $this->RenderPageCount();
 
-		$this->RenderLayout($header,$grid,$footer);
+		$this->RenderLayout($title,$grid,$foot);
 
 		$rs->Close();
 		$this->rs = false;
